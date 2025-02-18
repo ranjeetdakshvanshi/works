@@ -3,9 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Source-Code</title>
+    <title>Neomorphism Voice Call</title>
+    <style>
+        body {
+            background: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: #e0e0e0;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+            text-align: center;
+            width: 300px;
+        }
+        button, input {
+            background: #e0e0e0;
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        button:active, input:focus {
+            box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+            outline: none;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .keypad button {
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 18px;
+            width: 60px;
+            height: 60px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .call-button {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            width: 48%;
+        }
+        .call-button:active {
+            box-shadow: inset 5px 5px 10px #388E3C, inset -5px -5px 10px #66BB6A;
+        }
+        .clear-button {
+            background: #d32f2f;
+            color: white;
+            font-weight: bold;
+            width: 48%;
+        }
+        .clear-button:active {
+            box-shadow: inset 5px 5px 10px #b71c1c, inset -5px -5px 10px #f44336;
+        }
+    </style>
 </head>
 <body>
-    <h2>Source Code</h2>
+    <div class="container">
+        <h2>Neomorphic Voice Call</h2>
+        <div class="input-group">
+            <input type="text" id="phoneNumber" placeholder="Enter Indian phone number (+91XXXXXXXXXX)">
+        </div>
+        <div class="keypad">
+            <button onclick="appendToInput('1')">1</button>
+            <button onclick="appendToInput('2')">2</button>
+            <button onclick="appendToInput('3')">3</button>
+            <button onclick="appendToInput('4')">4</button>
+            <button onclick="appendToInput('5')">5</button>
+            <button onclick="appendToInput('6')">6</button>
+            <button onclick="appendToInput('7')">7</button>
+            <button onclick="appendToInput('8')">8</button>
+            <button onclick="appendToInput('9')">9</button>
+            <button onclick="appendToInput('0')">0</button>
+            <button onclick="deleteLastDigit()">⌫</button>
+        </div>
+        <div class="controls">
+            <button class="clear-button" onclick="clearInput()">Clear</button>
+            <button class="call-button" onclick="startCall()">Call</button>
+        </div>
+        <div id="status"></div>
+    </div>
+    <script>
+        function appendToInput(value) {
+            document.getElementById("phoneNumber").value += value;
+        }
+        function clearInput() {
+            document.getElementById("phoneNumber").value = "";
+        }
+        function deleteLastDigit() {
+            let inputField = document.getElementById("phoneNumber");
+            inputField.value = inputField.value.slice(0, -1);
+        }
+        async function startCall() {
+            const phoneNumber = document.getElementById("phoneNumber").value;
+            if (!phoneNumber.startsWith("+91")) {
+                alert("Invalid Indian number format!");
+                return;
+            }
+            try {
+                const response = await fetch('https://your-backend-server.com/call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber })
+                });
+                const data = await response.json();
+                document.getElementById('status').innerText = data.message;
+            } catch (error) {
+                document.getElementById('status').innerText = "Error starting call: " + error;
+            }
+        }
+    </script>
 </body>
 </html>
